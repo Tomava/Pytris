@@ -18,7 +18,7 @@ class GroundedPiece(Piece):
         to_be_removed = []
         for subpiece in self.list_of_subpieces:
             if subpiece.get_coordinates().get_y() in full_lines:
-                to_be_removed += subpiece
+                to_be_removed.append(subpiece)
         if len(full_lines) > 0:
             self.ground_coordinates.clear()
             for subpiece in to_be_removed:
@@ -39,7 +39,7 @@ class GroundedPiece(Piece):
         full_lines = []
         for line, amount in lines.items():
             if amount >= self.lines_widht:
-                full_lines += line
+                full_lines.append(line)
         self.remove_full_lines(full_lines)
         return len(full_lines)
 

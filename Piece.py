@@ -4,6 +4,7 @@ from Config import WIN_HEIGHT, WIN_WIDTH
 import Coordinates
 from copy import copy
 
+
 class Piece:
     def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
         self.list_of_subpieces = []
@@ -31,10 +32,14 @@ class Piece:
     def rotate(self):
         pass
 
-    def move_down(self):
+    def drop_down(self):
+        while self.ground_time == -1:
+            self.move_down(True)
+
+    def move_down(self, ignore_time=False):
         can_move = True
         for sub_piece in self.list_of_subpieces:
-            if not sub_piece.can_move_down():
+            if not sub_piece.can_move_down(ignore_time):
                 can_move = False
             if sub_piece.get_ground_time() != -1:
                 self.ground_time = sub_piece.get_ground_time()

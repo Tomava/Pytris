@@ -46,8 +46,8 @@ class SubPiece:
             return True
         return False
 
-    def can_move_down(self):
-        if pygame.time.get_ticks() - self.last_moved_vertical > self.vertical_rate:
+    def can_move_down(self, ignore_time=False):
+        if ignore_time or pygame.time.get_ticks() - self.last_moved_vertical > self.vertical_rate:
             if self.is_able_to_move(0, self.HEIGHT):
                 return True
             elif not self.is_grounded:

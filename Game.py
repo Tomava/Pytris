@@ -20,6 +20,7 @@ class Game:
         self.running = True
         self.playing = False
         self.has_rotated = False
+        self.has_dropped = False
         self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, set())
         self.ground_piece = GroundedPiece.GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
 
@@ -62,6 +63,12 @@ class Game:
             self.current_piece.move_left()
         if keys_pressed[pygame.K_d]:
             self.current_piece.move_right()
+        if keys_pressed[pygame.K_SPACE]:
+            if not self.has_dropped:
+                self.has_dropped = True
+                self.current_piece.drop_down()
+        else:
+            self.has_dropped = False
         if keys_pressed[pygame.K_w]:
             if not self.has_rotated:
                 self.has_rotated = True
