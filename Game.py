@@ -5,6 +5,9 @@ import JPiece
 import LPiece
 import SquarePiece
 import SPiece
+import ZPiece
+import TPiece
+import IPiece
 from Config import *
 from Textures import *
 
@@ -36,7 +39,7 @@ class Game:
         pygame.quit()
 
     def create_piece(self):
-        i = random.randint(0, 3)  # 7
+        i = random.randint(0, 6)  # 6
         match i:
             case 0:
                 self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
@@ -49,6 +52,15 @@ class Game:
                                                    self.ground_piece.get_occupied_coordinates())
             case 3:
                 self.current_piece = SPiece.SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                   self.ground_piece.get_occupied_coordinates())
+            case 4:
+                self.current_piece = ZPiece.ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                   self.ground_piece.get_occupied_coordinates())
+            case 5:
+                self.current_piece = TPiece.TPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                   self.ground_piece.get_occupied_coordinates())
+            case 6:
+                self.current_piece = IPiece.IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
                                                    self.ground_piece.get_occupied_coordinates())
 
     def update(self):

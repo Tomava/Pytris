@@ -36,14 +36,10 @@ class Piece:
             self.move_left()
             if self.rotate_subpieces(movements, True):
                 return True
-            # Move back right if unsuccessful
-            self.move_right()
             # Try to move right and rotate
             self.move_right()
             if self.rotate_subpieces(movements, True):
                 return True
-            # Move back left if unsuccessful
-            self.move_right()
         return False
 
     def can_rotate(self):
@@ -78,20 +74,20 @@ class Piece:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_down()
 
-    def move_left(self):
+    def move_left(self, ignore_time=False):
         can_move = True
         for sub_piece in self.list_of_subpieces:
-            if not sub_piece.can_move_left():
+            if not sub_piece.can_move_left(ignore_time):
                 can_move = False
                 break
         if can_move:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_left()
 
-    def move_right(self):
+    def move_right(self, ignore_time=False):
         can_move = True
         for sub_piece in self.list_of_subpieces:
-            if not sub_piece.can_move_right():
+            if not sub_piece.can_move_right(ignore_time):
                 can_move = False
                 break
         if can_move:

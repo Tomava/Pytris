@@ -1,5 +1,3 @@
-from Piece import Piece
-import SubPiece
 import Coordinates
 import SubPiece
 from Config import GAME_WIDTH
@@ -7,12 +5,11 @@ from Piece import Piece
 from Textures import *
 
 
-class JPiece(Piece):
+class TPiece(Piece):
     def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
         super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates)
-        self.texture = BLUE_IMAGE
-        # Topleft
-        coords_0 = Coordinates.Coordinates(int(GAME_WIDTH / 2) - 2 * piece_width, 0)
+        self.texture = PURPLE_IMAGE
+        coords_0 = Coordinates.Coordinates(int(GAME_WIDTH / 2) - piece_width, 0)
         self.list_of_subpieces.append(SubPiece.SubPiece(piece_width, piece_height, coords_0,
                                                         self.texture, vertical_rate, horizontal_rate,
                                                         ground_coordinates))
@@ -32,17 +29,17 @@ class JPiece(Piece):
     def rotate(self):
         movements = []
         if self.rotation == 0:
-            movements.extend([(2 * self.piece_width, 0), (self.piece_width, -self.piece_height), (0, 0),
-                             (-self.piece_width, self.piece_height)])
+            movements.extend([(self.piece_width, self.piece_height), (self.piece_width, -self.piece_height), (0, 0),
+                              (-self.piece_width, self.piece_height)])
         elif self.rotation == 1:
-            movements.extend([(0, 2 * self.piece_height), (self.piece_width, self.piece_height),
-                             (0, 0), (-self.piece_width, -self.piece_height)])
+            movements.extend([(-self.piece_width, self.piece_height), (self.piece_width, self.piece_height),
+                              (0, 0), (-self.piece_width, -self.piece_height)])
         elif self.rotation == 2:
-            movements.extend([(-2 * self.piece_width, 0), (-self.piece_width, self.piece_height),
-                             (0, 0), (self.piece_width, -self.piece_height)])
+            movements.extend([(-self.piece_width, -self.piece_height), (-self.piece_width, self.piece_height),
+                              (0, 0), (self.piece_width, -self.piece_height)])
         elif self.rotation == 3:
-            movements.extend([(0, -2 * self.piece_height), (-self.piece_width, -self.piece_height),
-                             (0, 0), (self.piece_width, self.piece_height)])
+            movements.extend([(self.piece_width, -self.piece_height), (-self.piece_width, -self.piece_height),
+                              (0, 0), (self.piece_width, self.piece_height)])
         if self.rotate_subpieces(movements):
             self.rotation += 1
             if self.rotation > 3:

@@ -1,16 +1,14 @@
-from copy import copy
-from Piece import Piece
-import SubPiece
-from Textures import *
 import Coordinates
-from Config import GAME_HEIGHT, GAME_WIDTH
+import SubPiece
+from Config import GAME_WIDTH
+from Piece import Piece
+from Textures import *
 
 
 class SPiece(Piece):
     def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
         super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates)
         self.texture = GREEN_IMAGE
-        # Topleft
         coords_0 = Coordinates.Coordinates(int(GAME_WIDTH / 2) - 2 * piece_width, piece_height)
         self.list_of_subpieces.append(SubPiece.SubPiece(piece_width, piece_height, coords_0,
                                                         self.texture, vertical_rate, horizontal_rate,

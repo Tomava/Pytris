@@ -1,8 +1,8 @@
-from Piece import Piece
-import SubPiece
-from Textures import *
 import Coordinates
-from Config import GAME_HEIGHT, GAME_WIDTH
+import SubPiece
+from Config import GAME_WIDTH
+from Piece import Piece
+from Textures import *
 
 
 class SquarePiece(Piece):

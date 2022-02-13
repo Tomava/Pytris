@@ -66,8 +66,8 @@ class SubPiece:
     def speed_down(self):
         self.speed = self.vertical_rate
 
-    def can_move_left(self):
-        if pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
+    def can_move_left(self, ignore_time=False):
+        if ignore_time or pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
             if self.is_able_to_move(-self.WIDTH, 0):
                 return True
         return False
@@ -76,8 +76,8 @@ class SubPiece:
         self.last_moved_horizontal = pygame.time.get_ticks()
         self.finalize_new_coordinates()
 
-    def can_move_right(self):
-        if pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
+    def can_move_right(self, ignore_time=False):
+        if ignore_time or pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
             if self.is_able_to_move(self.WIDTH, 0):
                 return True
         return False
