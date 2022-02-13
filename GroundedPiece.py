@@ -27,6 +27,7 @@ class GroundedPiece(Piece):
             if len(full_lines) > 0:
                 for lane in full_lines:
                     if subpiece.get_coordinates().get_y() < lane:
+                        subpiece.can_move_down(True)
                         subpiece.move_down()
             self.ground_coordinates.add(subpiece.get_coordinates())
 
