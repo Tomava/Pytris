@@ -51,7 +51,7 @@ class Game:
             self.create_piece()
 
     def draw(self):
-        self.screen.fill((255, 255, 255))
+        self.screen.blit(pygame.transform.scale(BACKGROUND, (WIN_WIDTH, WIN_HEIGHT)), (0, 0))
         for piece_object in self.current_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.ground_piece.get_subpieces():

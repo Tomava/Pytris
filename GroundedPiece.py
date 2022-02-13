@@ -24,9 +24,10 @@ class GroundedPiece(Piece):
             for subpiece in to_be_removed:
                 self.list_of_subpieces.remove(subpiece)
         for subpiece in self.list_of_subpieces:
-            for lane in full_lines:
-                if subpiece.get_coordinates().get_y() < lane:
-                    subpiece.move_down()
+            if len(full_lines) > 0:
+                for lane in full_lines:
+                    if subpiece.get_coordinates().get_y() < lane:
+                        subpiece.move_down()
             self.ground_coordinates.add(subpiece.get_coordinates())
 
     def count_full_lines(self) -> int:
@@ -40,6 +41,7 @@ class GroundedPiece(Piece):
         for line, amount in lines.items():
             if amount >= self.lines_widht:
                 full_lines.append(line)
+        full_lines.sort()
         self.remove_full_lines(full_lines)
         return len(full_lines)
 
