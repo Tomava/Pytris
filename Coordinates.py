@@ -28,6 +28,11 @@ class Coordinates:
     def get_tuple(self):
         return (self.get_x(), self.get_y())
 
+    def __hash__(self):
+        hash1 = hash(self.x);
+        hash2 = hash(self.x);
+        return hash1 ^ (hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2));
+
     def __eq__(self, other) -> bool:
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()
 
