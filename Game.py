@@ -1,11 +1,10 @@
-import pygame
-import sys
 import random
-import Coordinates
+
 import GroundedPiece
 import JPiece
-import SubPiece
+import LPiece
 import SquarePiece
+import SPiece
 from Config import *
 from Textures import *
 
@@ -37,12 +36,20 @@ class Game:
         pygame.quit()
 
     def create_piece(self):
-        i = random.randint(0, 1) #7
+        i = random.randint(0, 3)  # 7
         match i:
             case 0:
-                self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, self.ground_piece.get_occupied_coordinates())
+                self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                   self.ground_piece.get_occupied_coordinates())
             case 1:
-                self.current_piece = SquarePiece.SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, self.ground_piece.get_occupied_coordinates())
+                self.current_piece = SquarePiece.SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                             self.ground_piece.get_occupied_coordinates())
+            case 2:
+                self.current_piece = LPiece.LPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                   self.ground_piece.get_occupied_coordinates())
+            case 3:
+                self.current_piece = SPiece.SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                   self.ground_piece.get_occupied_coordinates())
 
     def update(self):
         self.current_piece.move_down()
@@ -59,17 +66,21 @@ class Game:
         pygame.display.update()
 
     def handle_movement(self, keys_pressed):
-        if keys_pressed[pygame.K_a]:
+        if keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]:
             self.current_piece.move_left()
-        if keys_pressed[pygame.K_d]:
+        if keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]:
             self.current_piece.move_right()
+        if keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]:
+            self.current_piece.speed_up()
+        else:
+            self.current_piece.speed_down()
         if keys_pressed[pygame.K_SPACE]:
             if not self.has_dropped:
                 self.has_dropped = True
                 self.current_piece.drop_down()
         else:
             self.has_dropped = False
-        if keys_pressed[pygame.K_w]:
+        if keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]:
             if not self.has_rotated:
                 self.has_rotated = True
                 self.current_piece.rotate()

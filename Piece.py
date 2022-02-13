@@ -14,6 +14,7 @@ class Piece:
         self.piece_width = piece_width
         self.piece_height = piece_height
         self.ground_time = -1
+        self.sped_up = False
 
     def rotate_subpieces(self, movements, moved=False):
         """
@@ -54,6 +55,17 @@ class Piece:
     def drop_down(self):
         while self.ground_time == -1:
             self.move_down(True)
+
+    def speed_up(self):
+        self.sped_up = True
+        for sub_piece in self.list_of_subpieces:
+            sub_piece.speed_up()
+
+    def speed_down(self):
+        if self.sped_up:
+            self.sped_up = False
+            for sub_piece in self.list_of_subpieces:
+                sub_piece.speed_down()
 
     def move_down(self, ignore_time=False):
         can_move = True

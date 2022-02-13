@@ -15,6 +15,7 @@ class SubPiece:
         self.object = pygame.transform.scale(self.texture, (self.WIDTH, self.HEIGHT))
         self.vertical_rate = vertical_rate
         self.horizontal_rate = horizontal_rate
+        self.speed = vertical_rate
         self.last_moved_vertical = pygame.time.get_ticks()
         self.last_moved_horizontal = -horizontal_rate
         self.ground_time = -1
@@ -47,7 +48,7 @@ class SubPiece:
         return False
 
     def can_move_down(self, ignore_time=False):
-        if ignore_time or pygame.time.get_ticks() - self.last_moved_vertical > self.vertical_rate:
+        if ignore_time or pygame.time.get_ticks() - self.last_moved_vertical > self.speed:
             if self.is_able_to_move(0, self.HEIGHT):
                 return True
             elif not self.is_grounded:
@@ -58,6 +59,12 @@ class SubPiece:
     def move_down(self):
         self.last_moved_vertical = pygame.time.get_ticks()
         self.finalize_new_coordinates()
+
+    def speed_up(self):
+        self.speed = self.vertical_rate / 4
+
+    def speed_down(self):
+        self.speed = self.vertical_rate
 
     def can_move_left(self):
         if pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
