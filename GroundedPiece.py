@@ -1,6 +1,6 @@
 import pygame
 from Piece import Piece
-from Config import WIN_HEIGHT, WIN_WIDTH
+from Config import GAME_HEIGHT, GAME_WIDTH
 import SubPiece
 
 
@@ -45,6 +45,8 @@ class GroundedPiece(Piece):
 
     def add_pieces(self, list_of_pieces) -> int:
         self.list_of_subpieces.update(list_of_pieces)
+        for sub_piece in list_of_pieces:
+            sub_piece.set_ground_time()
         return self.count_full_lines()
 
     def get_occupied_coordinates(self) -> set:

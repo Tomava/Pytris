@@ -1,5 +1,5 @@
 import pygame
-from Config import WIN_HEIGHT, WIN_WIDTH
+from Config import GAME_HEIGHT, GAME_WIDTH
 from copy import copy
 
 
@@ -24,11 +24,11 @@ class SubPiece:
         self.coordinates = copy(self.new_coordinates)
 
     def is_inside_play_area(self) -> bool:
-        if self.new_coordinates.get_x() + self.WIDTH >= WIN_WIDTH:
+        if self.new_coordinates.get_x() + self.WIDTH > GAME_WIDTH:
             return False
         if self.new_coordinates.get_x() < 0:
             return False
-        if self.new_coordinates.get_y() + self.HEIGHT >= WIN_HEIGHT:
+        if self.new_coordinates.get_y() + self.HEIGHT > GAME_HEIGHT:
             return False
         if self.new_coordinates.get_y() < 0:
             return False
@@ -79,6 +79,14 @@ class SubPiece:
         self.last_moved_horizontal = pygame.time.get_ticks()
         self.finalize_new_coordinates()
 
+    def can_move_relative(self, relative_x, relative_y):
+        if self.is_able_to_move(relative_x, relative_y):
+            return True
+        return False
+
+    def move_relative(self):
+        self.finalize_new_coordinates()
+
     def get_object(self):
         return self.object
 
@@ -87,3 +95,6 @@ class SubPiece:
 
     def get_ground_time(self):
         return self.ground_time
+
+    def set_ground_time(self):
+        self.ground_time = pygame.time.get_ticks()

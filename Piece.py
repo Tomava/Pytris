@@ -1,6 +1,6 @@
 import pygame
 import SubPiece
-from Config import WIN_HEIGHT, WIN_WIDTH
+from Config import GAME_HEIGHT, GAME_WIDTH
 import Coordinates
 from copy import copy
 
@@ -15,16 +15,35 @@ class Piece:
         self.piece_height = piece_height
         self.ground_time = -1
 
-    def rotate_subpiece(self, piece_index, relative_x, relative_y, only_check: bool):
-        if only_check:
-            new_coordinates = copy(self.list_of_subpieces[piece_index].get_coordinates())
-            new_coordinates.add_x_and_y(relative_x, relative_y)
-            if new_coordinates in self.ground_coordinates:
-                return False
-        else:
-            self.list_of_subpieces[piece_index].get_coordinates().add_x_and_y(relative_x, relative_y)
+    def rotate_subpieces(self, movements, moved=False):
+        """
+        Tries to rotate subpieces
+        :param moved: bool, If True will try to move the piece and then rotate
+        :param movements: list, Contains tuples for relative_x and relative_y for each index of pieces
+        :return: nothing
+        """""
+        can_rotate = True
+        for sub_piece, (relative_x, relative_y) in zip(self.list_of_subpieces, movements):
+            if not sub_piece.can_move_relative(relative_x, relative_y):
+                can_rotate = False
+        if can_rotate:
+            for sub_piece in self.list_of_subpieces:
+                sub_piece.move_relative()
             return True
-        return True
+        elif not moved:
+            # Try to move pieces left and see if they still collide
+            self.move_left()
+            if self.rotate_subpieces(movements, True):
+                return True
+            # Move back right if unsuccessful
+            self.move_right()
+            # Try to move right and rotate
+            self.move_right()
+            if self.rotate_subpieces(movements, True):
+                return True
+            # Move back left if unsuccessful
+            self.move_right()
+        return False
 
     def can_rotate(self):
         return True
