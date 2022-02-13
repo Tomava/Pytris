@@ -26,6 +26,3 @@ class SquarePiece(Piece):
         self.list_of_subpieces.append(
             SubPiece.SubPiece(piece_width, piece_height, coords_3, self.texture, vertical_rate,
                               horizontal_rate, ground_coordinates))
-
-    def rotate(self):
-        pass

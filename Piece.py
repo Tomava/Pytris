@@ -2,7 +2,7 @@ import pygame
 import SubPiece
 from Config import WIN_HEIGHT, WIN_WIDTH
 import Coordinates
-
+from copy import copy
 
 class Piece:
     def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
@@ -13,6 +13,17 @@ class Piece:
         self.piece_width = piece_width
         self.piece_height = piece_height
         self.ground_time = -1
+
+    def rotate_subpiece(self, piece_index, relative_x, relative_y, only_check: bool):
+        if only_check:
+            new_coordinates = copy(self.list_of_subpieces[piece_index].get_coordinates())
+            new_coordinates.add_x_and_y(relative_x, relative_y)
+            if new_coordinates in self.ground_coordinates:
+                return False
+        else:
+            self.list_of_subpieces[piece_index].get_coordinates().add_x_and_y(relative_x, relative_y)
+            return True
+        return True
 
     def can_rotate(self):
         return True

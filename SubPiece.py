@@ -26,11 +26,11 @@ class SubPiece:
     def is_inside_play_area(self) -> bool:
         if self.new_coordinates.get_x() + self.WIDTH >= WIN_WIDTH:
             return False
-        if self.new_coordinates.get_x() <= 0:
+        if self.new_coordinates.get_x() < 0:
             return False
         if self.new_coordinates.get_y() + self.HEIGHT >= WIN_HEIGHT:
             return False
-        if self.new_coordinates.get_y() <= 0:
+        if self.new_coordinates.get_y() < 0:
             return False
         return True
 

@@ -24,15 +24,6 @@ class JPiece(Piece):
         self.list_of_subpieces.append(SubPiece.SubPiece( piece_width, piece_height, coords_3,
                                                         self.texture, vertical_rate, horizontal_rate, ground_coordinates))
 
-    def rotate_subpiece(self, piece_index, relative_x, relative_y, only_check: bool):
-        if only_check:
-            if copy(self.list_of_subpieces[piece_index].get_coordinates()).add_x_and_y(relative_x, relative_y) in self.ground_coordinates:
-                return False
-        else:
-            self.list_of_subpieces[piece_index].get_coordinates().add_x_and_y(relative_x, relative_y)
-            return True
-        return True
-
     def can_rotate(self, only_check: bool):
         if self.rotation == 0:
             if not self.rotate_subpiece(0, 2 * self.piece_width, 0, only_check):
