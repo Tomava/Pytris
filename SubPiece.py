@@ -27,26 +27,38 @@ class SubPiece:
             return False
         return True
 
-    def move_down(self):
+    def can_move_down(self):
         if pygame.time.get_ticks() - self.last_moved_vertical > self.vertical_rate:
             if self.check_inside_play_area():
-                self.last_moved_vertical = pygame.time.get_ticks()
-                self.coordinates.add_y(self.HEIGHT)
+                return True
+        return False
+
+    def move_down(self):
+        self.last_moved_vertical = pygame.time.get_ticks()
+        self.coordinates.add_y(self.HEIGHT)
+
+    def can_move_left(self):
+        if pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
+            if self.check_inside_play_area():
+                return True
+        return False
 
     def move_left(self):
+        self.last_moved_horizontal = pygame.time.get_ticks()
+        self.coordinates.add_x(-self.HEIGHT)
+
+    def can_move_right(self):
         if pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
             if self.check_inside_play_area():
-                self.last_moved_horizontal = pygame.time.get_ticks()
-                self.coordinates.add_x(-self.HEIGHT)
+                return True
+        return False
 
     def move_right(self):
-        if pygame.time.get_ticks() - self.last_moved_horizontal > self.horizontal_rate:
-            if self.check_inside_play_area():
-                self.last_moved_horizontal = pygame.time.get_ticks()
-                self.coordinates.add_x(self.HEIGHT)
+        self.last_moved_horizontal = pygame.time.get_ticks()
+        self.coordinates.add_x(self.HEIGHT)
 
     def get_object(self):
         return self.object
 
     def get_coordinates(self):
-        return self.coordinates.get_tuple()
+        return self.coordinates

@@ -1,7 +1,10 @@
 import pygame
 import sys
 import Coordinates
+import GroundedPiece
+import JPiece
 import SubPiece
+import SquarePiece
 from Config import *
 from Textures import *
 
@@ -15,8 +18,11 @@ class Game:
         # self.font = pygame.font.Font("Arial", 32)
         self.running = True
         self.playing = False
+        self.has_rotated = False
         self.pieces = []
-        self.current_piece = SubPiece.SubPiece(WIN_WIDHT, WIN_HEIGHT, PIECE_WIDTH, PIECE_HEIGHT, Coordinates.Coordinates(100, 100), RED_IMAGE, 400, 100)
+        self.current_piece = JPiece.JPiece(WIN_WIDHT, WIN_HEIGHT, PIECE_WIDTH, PIECE_HEIGHT, 400, 100, set())
+        ground_piece = GroundedPiece.GroundedPiece(WIN_WIDHT, WIN_HEIGHT, PIECE_WIDTH, PIECE_HEIGHT)
+        ground_piece.add_pieces(self.current_piece.get_subpieces())
         self.pieces.append(self.current_piece)
 
     def start(self):
@@ -37,7 +43,8 @@ class Game:
     def draw(self):
         self.screen.fill((255, 255, 255))
         for piece in self.pieces:
-            self.screen.blit(piece.get_object(), piece.get_coordinates())
+            for piece_object in piece.get_subpieces():
+                self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         pygame.display.update()
 
     def handle_movement(self, keys_pressed):
@@ -45,6 +52,12 @@ class Game:
             self.current_piece.move_left()
         if keys_pressed[pygame.K_d]:
             self.current_piece.move_right()
+        if keys_pressed[pygame.K_w]:
+            if not self.has_rotated:
+                self.has_rotated = True
+                self.current_piece.rotate()
+        else:
+            self.has_rotated = False
 
 
 if __name__ == "__main__":

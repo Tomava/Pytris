@@ -21,8 +21,17 @@ class Coordinates:
     def add_y(self, amount):
         self.set_y(self.get_y() + amount)
 
+    def add_x_and_y(self, x_amount, y_amount):
+        self.add_x(x_amount)
+        self.add_y(y_amount)
+
     def get_tuple(self):
         return (self.get_x(), self.get_y())
 
     def __eq__(self, other) -> bool:
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()
+
+    def __lt__(self, other) -> bool:
+        if self.get_x() == other.get_x():
+            return self.get_y() <= other.get_y()
+        return self.get_x() <= other.get_x()
