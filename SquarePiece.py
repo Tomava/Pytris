@@ -6,9 +6,14 @@ from Textures import *
 
 
 class SquarePiece(Piece):
-    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, ghost=False):
         self.texture = YELLOW_IMAGE
+        if ghost:
+            self.texture = YELLOW_GHOST_IMAGE
         super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates)
+        if not ghost:
+            self.ghost = SquarePieceGhost(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates)
+        self.update_ghost()
 
     def create_piece(self):
         # Topleft
@@ -28,4 +33,9 @@ class SquarePiece(Piece):
         self.list_of_subpieces.append(
             SubPiece.SubPiece(self.piece_width, self.piece_height, coords_3, self.texture, self.vertical_rate,
                               self.horizontal_rate, self.ground_coordinates))
+
+
+class SquarePieceGhost(SquarePiece):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
+        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, True)
 

@@ -100,8 +100,15 @@ class SubPiece:
     def get_coordinates(self):
         return self.coordinates
 
+    def set_coordinates(self, coordinates):
+        self.coordinates = coordinates
+
     def get_ground_time(self):
         return self.ground_time
 
     def set_ground_time(self):
         self.ground_time = pygame.time.get_ticks()
+
+    def reset_ground_time(self):
+        self.ground_time = -1
+        self.is_grounded = False

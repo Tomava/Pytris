@@ -6,7 +6,7 @@ from copy import copy
 
 
 class Piece:
-    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, ghost=False):
         self.list_of_subpieces = []
         # Set of coordinates that the ground occupies
         self.ground_coordinates = ground_coordinates
@@ -18,9 +18,27 @@ class Piece:
         self.ground_time = -1
         self.sped_up = False
         self.create_piece()
+        self.ghost = None
+
 
     def create_piece(self):
         pass
+
+    def update_ghost(self):
+        if self.ghost is not None:
+            self.ghost.teleport(self)
+            self.ghost.set_ground_time(-1)
+            for subpiece in self.ghost.get_subpieces():
+                subpiece.reset_ground_time()
+            self.ghost.drop_down()
+
+    def get_ghost(self):
+        if self.ghost is not None:
+            return self.ghost
+
+    def teleport(self, other):
+        for subpiece, other_subpiece in zip(self.list_of_subpieces, other.get_subpieces()):
+            subpiece.set_coordinates(other_subpiece.get_coordinates())
 
     def rotate_subpieces(self, movements, moved=False):
         """
@@ -36,6 +54,7 @@ class Piece:
         if can_rotate:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_relative()
+            self.update_ghost()
             return True
         elif not moved:
             # Try to move pieces left and see if they still collide
@@ -79,6 +98,7 @@ class Piece:
         if can_move:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_down()
+            self.update_ghost()
 
     def move_left(self, ignore_time=False):
         can_move = True
@@ -89,6 +109,7 @@ class Piece:
         if can_move:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_left()
+            self.update_ghost()
 
     def move_right(self, ignore_time=False):
         can_move = True
@@ -99,9 +120,18 @@ class Piece:
         if can_move:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_right()
+            self.update_ghost()
 
     def get_subpieces(self):
         return self.list_of_subpieces
 
     def get_ground_time(self):
         return self.ground_time
+
+    def set_ground_time(self, time):
+        self.ground_time = time
+
+
+class PieceGhost(Piece):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
+        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, True)

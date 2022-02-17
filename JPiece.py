@@ -8,9 +8,14 @@ from Textures import *
 
 
 class JPiece(Piece):
-    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, ghost=False):
         self.texture = BLUE_IMAGE
+        if ghost:
+            self.texture = BLUE_GHOST_IMAGE
         super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates)
+        if not ghost:
+            self.ghost = JPieceGhost(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates)
+        self.update_ghost()
 
     def create_piece(self):
         # Topleft
@@ -49,3 +54,8 @@ class JPiece(Piece):
             self.rotation += 1
             if self.rotation > 3:
                 self.rotation = 0
+
+
+class JPieceGhost(JPiece):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
+        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, True)
