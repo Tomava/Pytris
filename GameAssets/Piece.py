@@ -1,10 +1,3 @@
-import pygame
-import SubPiece
-from Config import GAME_HEIGHT, GAME_WIDTH
-import Coordinates
-from copy import copy
-
-
 class Piece:
     def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, ghost=False):
         self.list_of_subpieces = []
@@ -19,7 +12,6 @@ class Piece:
         self.sped_up = False
         self.create_piece()
         self.ghost = None
-
 
     def create_piece(self):
         pass

@@ -1,13 +1,13 @@
 import random
 
-import GroundedPiece
-import JPiece
-import LPiece
-import SquarePiece
-import SPiece
-import ZPiece
-import TPiece
-import IPiece
+from GameAssets.GroundedPiece import GroundedPiece
+from GameAssets.JPiece import JPiece
+from GameAssets.LPiece import LPiece
+from GameAssets.SquarePiece import SquarePiece
+from GameAssets.SPiece import SPiece
+from GameAssets.ZPiece import ZPiece
+from GameAssets.TPiece import TPiece
+from GameAssets.IPiece import IPiece
 from Config import *
 from Textures import *
 
@@ -25,7 +25,7 @@ class Game:
         self.playing = False
         self.has_rotated = False
         self.has_dropped = False
-        self.ground_piece = GroundedPiece.GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
+        self.ground_piece = GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
         self.create_piece()
 
     def start(self):
@@ -46,26 +46,26 @@ class Game:
         i = random.choice(tuple(self.pieces))
         match i:
             case 0:
-                self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                   self.ground_piece.get_occupied_coordinates())
+                self.current_piece = JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                            self.ground_piece.get_occupied_coordinates())
             case 1:
-                self.current_piece = SquarePiece.SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                             self.ground_piece.get_occupied_coordinates())
+                self.current_piece = SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                                 self.ground_piece.get_occupied_coordinates())
             case 2:
-                self.current_piece = LPiece.LPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                   self.ground_piece.get_occupied_coordinates())
+                self.current_piece = LPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                            self.ground_piece.get_occupied_coordinates())
             case 3:
-                self.current_piece = SPiece.SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                   self.ground_piece.get_occupied_coordinates())
+                self.current_piece = SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                            self.ground_piece.get_occupied_coordinates())
             case 4:
-                self.current_piece = ZPiece.ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                   self.ground_piece.get_occupied_coordinates())
+                self.current_piece = ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                            self.ground_piece.get_occupied_coordinates())
             case 5:
-                self.current_piece = TPiece.TPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                   self.ground_piece.get_occupied_coordinates())
+                self.current_piece = TPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                            self.ground_piece.get_occupied_coordinates())
             case 6:
-                self.current_piece = IPiece.IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                   self.ground_piece.get_occupied_coordinates())
+                self.current_piece = IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
+                                            self.ground_piece.get_occupied_coordinates())
         self.pieces.remove(i)
 
     def update(self):

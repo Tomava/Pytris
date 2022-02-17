@@ -1,7 +1,7 @@
 import pygame
-from Piece import Piece
+from GameAssets.Piece import Piece
 from Config import GAME_HEIGHT, GAME_WIDTH
-import SubPiece
+from GameAssets.SubPiece import SubPiece
 
 
 class GroundedPiece(Piece):
