@@ -49,6 +49,7 @@ class IPiece(Piece):
         if can_rotate:
             for sub_piece in self.list_of_subpieces:
                 sub_piece.move_relative()
+            self.update_ghost()
             return True
         elif not moved:
             # Try to move pieces left  twice and see if they still collide
@@ -85,6 +86,7 @@ class IPiece(Piece):
             self.rotation += 1
             if self.rotation > 3:
                 self.rotation = 0
+
 
 class IPieceGhost(IPiece):
     def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates):
