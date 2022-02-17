@@ -19,12 +19,14 @@ class Game:
         pygame.display.set_caption("Hello")
         self.clock = pygame.time.Clock()
         # self.font = pygame.font.Font("Arial", 32)
+        self.pieces = set(x for x in range(0, 7))
+        self.current_piece = None
         self.running = True
         self.playing = False
         self.has_rotated = False
         self.has_dropped = False
-        self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, set())
         self.ground_piece = GroundedPiece.GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
+        self.create_piece()
 
     def start(self):
         self.playing = True
@@ -39,7 +41,9 @@ class Game:
         pygame.quit()
 
     def create_piece(self):
-        i = random.randint(0, 6)  # 6
+        if len(self.pieces) < 1:
+            self.pieces = set(x for x in range(0, 7))
+        i = random.choice(tuple(self.pieces))
         match i:
             case 0:
                 self.current_piece = JPiece.JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
@@ -62,6 +66,7 @@ class Game:
             case 6:
                 self.current_piece = IPiece.IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
                                                    self.ground_piece.get_occupied_coordinates())
+        self.pieces.remove(i)
 
     def update(self):
         self.current_piece.move_down()

@@ -13,14 +13,20 @@ class Piece:
         self.rotation = 0
         self.piece_width = piece_width
         self.piece_height = piece_height
+        self.vertical_rate = vertical_rate
+        self.horizontal_rate = horizontal_rate
         self.ground_time = -1
         self.sped_up = False
+        self.create_piece()
+
+    def create_piece(self):
+        pass
 
     def rotate_subpieces(self, movements, moved=False):
         """
         Tries to rotate subpieces
-        :param moved: bool, If True will try to move the piece and then rotate
         :param movements: list, Contains tuples for relative_x and relative_y for each index of pieces
+        :param moved: bool, If False will try to move the piece and then rotate
         :return: nothing
         """""
         can_rotate = True
