@@ -8,6 +8,7 @@ from GameAssets.SPiece import SPiece
 from GameAssets.ZPiece import ZPiece
 from GameAssets.TPiece import TPiece
 from GameAssets.IPiece import IPiece
+from GameAssets.Coordinates import Coordinates
 from Config import *
 from Textures import *
 
@@ -20,16 +21,18 @@ class Game:
         self.clock = pygame.time.Clock()
         # self.font = pygame.font.Font("Arial", 32)
         self.pieces = set(x for x in range(0, 7))
-        self.current_piece = None
+        self.next_index = 0
+        self.get_next_index()
         self.running = True
         self.playing = False
         self.has_rotated = False
         self.has_dropped = False
         self.ground_piece = GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
-        self.create_piece()
+        self.current_piece = self.create_piece(Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
         self.score = 0
         self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
         self.got_tetris = 0
+        self.cleared_lines = 0
 
     def start(self):
         self.playing = True
@@ -43,33 +46,36 @@ class Game:
             self.draw()
         pygame.quit()
 
-    def create_piece(self):
+    def get_next_index(self):
         if len(self.pieces) < 1:
             self.pieces = set(x for x in range(0, 7))
-        i = random.choice(tuple(self.pieces))
-        match i:
+        self.next_index = random.choice(tuple(self.pieces))
+        self.pieces.remove(self.next_index)
+
+    def create_piece(self, coordinates):
+        match self.next_index:
             case 0:
-                self.current_piece = JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                            self.ground_piece.get_occupied_coordinates())
+                current_piece = JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates())
             case 1:
-                self.current_piece = SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                                 self.ground_piece.get_occupied_coordinates())
+                current_piece = SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                            self.ground_piece.get_occupied_coordinates())
             case 2:
-                self.current_piece = LPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                            self.ground_piece.get_occupied_coordinates())
+                current_piece = LPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates())
             case 3:
-                self.current_piece = SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                            self.ground_piece.get_occupied_coordinates())
+                current_piece = SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates())
             case 4:
-                self.current_piece = ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                            self.ground_piece.get_occupied_coordinates())
+                current_piece = ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates())
             case 5:
-                self.current_piece = TPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                            self.ground_piece.get_occupied_coordinates())
+                current_piece = TPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates())
             case 6:
-                self.current_piece = IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100,
-                                            self.ground_piece.get_occupied_coordinates())
-        self.pieces.remove(i)
+                current_piece = IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates())
+        return current_piece
 
     def handle_scoring(self, removed_lines):
         if removed_lines == 0:
@@ -82,13 +88,15 @@ class Game:
             self.got_tetris = 0
         self.score += score
         self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
+        self.cleared_lines += removed_lines
 
     def update(self):
         self.current_piece.move_down()
         if self.current_piece.get_ground_time() != -1:
             removed_lines = self.ground_piece.add_pieces(self.current_piece.get_subpieces())
             self.handle_scoring(removed_lines)
-            self.create_piece()
+            self.get_next_index()
+            self.current_piece = self.create_piece(Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
 
     def draw(self):
         self.screen.fill((55, 0, 155))
@@ -99,7 +107,7 @@ class Game:
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.ground_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
-        self.screen.blit(self.score_text, (1, 1))
+        self.screen.blit(self.score_text, (0, 0))
         pygame.display.update()
 
     def handle_movement(self, keys_pressed):

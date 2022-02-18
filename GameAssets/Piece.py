@@ -1,5 +1,5 @@
 class Piece:
-    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, ground_coordinates, ghost=False):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, ghost=False):
         self.list_of_subpieces = []
         # Set of coordinates that the ground occupies
         self.ground_coordinates = ground_coordinates
@@ -8,6 +8,7 @@ class Piece:
         self.piece_height = piece_height
         self.vertical_rate = vertical_rate
         self.horizontal_rate = horizontal_rate
+        self.top_left_coordinates = top_left_coordinates
         self.ground_time = -1
         self.sped_up = False
         self.create_piece()
@@ -122,6 +123,9 @@ class Piece:
 
     def set_ground_time(self, time):
         self.ground_time = time
+        
+    def set_ground_coordinates(self, ground_coordinates):
+        self.ground_coordinates = ground_coordinates
 
 
 class PieceGhost(Piece):
