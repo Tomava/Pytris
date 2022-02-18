@@ -15,20 +15,23 @@ from Textures import *
 
 class Game:
     def __init__(self):
+        self.current_piece = None
+        self.next_piece = None
         pygame.init()
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pygame.display.set_caption("Hello")
         self.clock = pygame.time.Clock()
         # self.font = pygame.font.Font("Arial", 32)
         self.pieces = set(x for x in range(0, 7))
-        self.next_index = 0
-        self.get_next_index()
+        self.next_indexes = []
+        self.next_pieces = []
+        self.get_next_indexes()
         self.running = True
         self.playing = False
         self.has_rotated = False
         self.has_dropped = False
         self.ground_piece = GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
-        self.current_piece = self.create_piece(Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
+        self.handle_piece_creation()
         self.score = 0
         self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
         self.got_tetris = 0
@@ -46,14 +49,16 @@ class Game:
             self.draw()
         pygame.quit()
 
-    def get_next_index(self):
-        if len(self.pieces) < 1:
-            self.pieces = set(x for x in range(0, 7))
-        self.next_index = random.choice(tuple(self.pieces))
-        self.pieces.remove(self.next_index)
+    def get_next_indexes(self):
+        while len(self.next_indexes) < NEXT_PIECES:
+            if len(self.pieces) < 1:
+                self.pieces = set(x for x in range(0, 7))
+            next_index = random.choice(tuple(self.pieces))
+            self.next_indexes.append(next_index)
+            self.pieces.remove(next_index)
 
-    def create_piece(self, coordinates):
-        match self.next_index:
+    def create_piece(self, index, coordinates):
+        match index:
             case 0:
                 current_piece = JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
                                        self.ground_piece.get_occupied_coordinates())
@@ -90,13 +95,22 @@ class Game:
         self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
         self.cleared_lines += removed_lines
 
+    def handle_piece_creation(self):
+        self.current_piece = self.create_piece(self.next_indexes[0], Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
+        self.next_indexes.pop(0)
+        self.get_next_indexes()
+        offset_y = 0
+        self.next_pieces.clear()
+        for index in self.next_indexes:
+            self.next_pieces.append(self.create_piece(index, Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, offset_y)))
+            offset_y += 4 * 32
+
     def update(self):
         self.current_piece.move_down()
         if self.current_piece.get_ground_time() != -1:
             removed_lines = self.ground_piece.add_pieces(self.current_piece.get_subpieces())
             self.handle_scoring(removed_lines)
-            self.get_next_index()
-            self.current_piece = self.create_piece(Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
+            self.handle_piece_creation()
 
     def draw(self):
         self.screen.fill((55, 0, 155))
@@ -107,7 +121,10 @@ class Game:
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.ground_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
-        self.screen.blit(self.score_text, (0, 0))
+        for next_piece in self.next_pieces:
+            for piece_object in next_piece.get_subpieces():
+                self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
+        self.screen.blit(self.score_text, (14, 14))
         pygame.display.update()
 
     def handle_movement(self, keys_pressed):
