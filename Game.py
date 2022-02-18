@@ -27,6 +27,9 @@ class Game:
         self.has_dropped = False
         self.ground_piece = GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
         self.create_piece()
+        self.score = 0
+        self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
+        self.got_tetris = 0
 
     def start(self):
         self.playing = True
@@ -68,20 +71,35 @@ class Game:
                                             self.ground_piece.get_occupied_coordinates())
         self.pieces.remove(i)
 
+    def handle_scoring(self, removed_lines):
+        if removed_lines == 0:
+            return
+        score = SCORING.get(removed_lines)
+        if removed_lines == 4:
+            score += self.got_tetris * SCORING.get(4)
+            self.got_tetris = 0.5
+        else:
+            self.got_tetris = 0
+        self.score += score
+        self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
+
     def update(self):
         self.current_piece.move_down()
         if self.current_piece.get_ground_time() != -1:
-            self.ground_piece.add_pieces(self.current_piece.get_subpieces())
+            removed_lines = self.ground_piece.add_pieces(self.current_piece.get_subpieces())
+            self.handle_scoring(removed_lines)
             self.create_piece()
 
     def draw(self):
-        self.screen.blit(pygame.transform.scale(BACKGROUND, (WIN_WIDTH, WIN_HEIGHT)), (0, 0))
+        self.screen.fill((55, 0, 155))
+        self.screen.blit(pygame.transform.scale(BACKGROUND, (GAME_WIDTH, GAME_HEIGHT)), (GAME_OFFSET_X, GAME_OFFSET_Y))
         for piece_object in self.current_piece.get_ghost().get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.current_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.ground_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
+        self.screen.blit(self.score_text, (1, 1))
         pygame.display.update()
 
     def handle_movement(self, keys_pressed):

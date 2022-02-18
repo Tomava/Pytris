@@ -1,5 +1,5 @@
 import pygame
-from Config import GAME_HEIGHT, GAME_WIDTH
+from Config import GAME_HEIGHT, GAME_WIDTH, GAME_OFFSET_X, GAME_OFFSET_Y
 from copy import copy
 
 
@@ -9,6 +9,7 @@ class SubPiece:
         self.HEIGHT = height
         self.ground_coordinates = ground_coordinates
         # Top left corner of the piece
+        coordinates.add_x_and_y(GAME_OFFSET_X, GAME_OFFSET_Y)
         self.coordinates = coordinates
         self.new_coordinates = copy(coordinates)
         self.texture = texture
@@ -25,11 +26,11 @@ class SubPiece:
         self.coordinates = copy(self.new_coordinates)
 
     def is_inside_play_area(self) -> bool:
-        if self.new_coordinates.get_x() + self.WIDTH > GAME_WIDTH:
+        if self.new_coordinates.get_x() + self.WIDTH > GAME_WIDTH + GAME_OFFSET_X:
             return False
         if self.new_coordinates.get_x() < 0:
             return False
-        if self.new_coordinates.get_y() + self.HEIGHT > GAME_HEIGHT:
+        if self.new_coordinates.get_y() + self.HEIGHT > GAME_HEIGHT + GAME_OFFSET_Y:
             return False
         if self.new_coordinates.get_y() < 0:
             return False
