@@ -7,13 +7,13 @@ from copy import copy
 
 
 class SPiece(Piece):
-    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, ghost=False):
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, index, ghost=False):
         self.texture = GREEN_IMAGE
         if ghost:
             self.texture = GREEN_GHOST_IMAGE
-        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates)
+        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, index)
         if not ghost:
-            self.ghost = SPieceGhost(piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates)
+            self.ghost = SPieceGhost(piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, index)
         self.update_ghost()
 
     def create_piece(self):
@@ -59,5 +59,5 @@ class SPiece(Piece):
 
 
 class SPieceGhost(SPiece):
-    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates):
-        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, True)
+    def __init__(self, piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, index):
+        super().__init__(piece_width, piece_height, vertical_rate, horizontal_rate, top_left_coordinates, ground_coordinates, index, True)

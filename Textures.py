@@ -2,6 +2,7 @@ import pygame
 import os
 
 BACKGROUND = pygame.image.load(f"Assets{os.sep}BackGround.png")
+HOLD_BACKGROUND = pygame.image.load(f"Assets{os.sep}HoldBackGround.png")
 
 LIGHTBLUE_IMAGE = pygame.image.load(f"Assets{os.sep}LightBlueOutlined.png")
 BLUE_IMAGE = pygame.image.load(f"Assets{os.sep}BlueOutlined.png")

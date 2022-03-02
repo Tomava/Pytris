@@ -1,5 +1,7 @@
 import random
 
+import pygame
+
 from GameAssets.GroundedPiece import GroundedPiece
 from GameAssets.JPiece import JPiece
 from GameAssets.LPiece import LPiece
@@ -12,11 +14,13 @@ from GameAssets.Coordinates import Coordinates
 from Config import *
 from Textures import *
 
+#TODO: Decimal in score
 
 class Game:
     def __init__(self):
         self.current_piece = None
         self.next_piece = None
+        self.hold_piece = None
         pygame.init()
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pygame.display.set_caption("Hello")
@@ -30,6 +34,7 @@ class Game:
         self.playing = False
         self.has_rotated = False
         self.has_dropped = False
+        self.has_swapped = False
         self.ground_piece = GroundedPiece(PIECE_WIDTH, PIECE_HEIGHT, 10)
         self.handle_piece_creation()
         self.score = 0
@@ -60,26 +65,26 @@ class Game:
     def create_piece(self, index, coordinates):
         match index:
             case 0:
-                current_piece = JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                       self.ground_piece.get_occupied_coordinates())
+                current_piece = IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates(), index)
             case 1:
-                current_piece = SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                            self.ground_piece.get_occupied_coordinates())
+                current_piece = JPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates(), index)
             case 2:
                 current_piece = LPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                       self.ground_piece.get_occupied_coordinates())
+                                       self.ground_piece.get_occupied_coordinates(), index)
             case 3:
-                current_piece = SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                       self.ground_piece.get_occupied_coordinates())
+                current_piece = SquarePiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                            self.ground_piece.get_occupied_coordinates(), index)
             case 4:
-                current_piece = ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                       self.ground_piece.get_occupied_coordinates())
+                current_piece = SPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates(), index)
             case 5:
                 current_piece = TPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                       self.ground_piece.get_occupied_coordinates())
+                                       self.ground_piece.get_occupied_coordinates(), index)
             case 6:
-                current_piece = IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
-                                       self.ground_piece.get_occupied_coordinates())
+                current_piece = ZPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
+                                       self.ground_piece.get_occupied_coordinates(), index)
         return current_piece
 
     def handle_scoring(self, removed_lines):
@@ -92,18 +97,18 @@ class Game:
         else:
             self.got_tetris = 0
         self.score += score
-        self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
+        self.score_text = SCORE_FONT.render(str(int(self.score)), True, (255, 255, 255))
         self.cleared_lines += removed_lines
 
     def handle_piece_creation(self):
         self.current_piece = self.create_piece(self.next_indexes[0], Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
         self.next_indexes.pop(0)
         self.get_next_indexes()
-        offset_y = 0
+        offset_y = 5 * PIECE_HEIGHT
         self.next_pieces.clear()
         for index in self.next_indexes:
             self.next_pieces.append(self.create_piece(index, Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, offset_y)))
-            offset_y += 4 * 32
+            offset_y += 4 * PIECE_HEIGHT
 
     def update(self):
         self.current_piece.move_down()
@@ -111,14 +116,19 @@ class Game:
             removed_lines = self.ground_piece.add_pieces(self.current_piece.get_subpieces())
             self.handle_scoring(removed_lines)
             self.handle_piece_creation()
+            self.has_swapped = False
 
     def draw(self):
         self.screen.fill((55, 0, 155))
         self.screen.blit(pygame.transform.scale(BACKGROUND, (GAME_WIDTH, GAME_HEIGHT)), (GAME_OFFSET_X, GAME_OFFSET_Y))
+        self.screen.blit(pygame.transform.scale(HOLD_BACKGROUND, (4 * PIECE_WIDTH, 4 * PIECE_HEIGHT)), (GAME_WIDTH + WIN_OFFSET_X / 6, WIN_OFFSET_Y))
         for piece_object in self.current_piece.get_ghost().get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.current_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
+        if self.hold_piece is not None:
+            for piece_object in self.hold_piece.get_subpieces():
+                self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.ground_piece.get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for next_piece in self.next_pieces:
@@ -148,6 +158,15 @@ class Game:
                 self.current_piece.rotate()
         else:
             self.has_rotated = False
+        if keys_pressed[pygame.K_LSHIFT]:
+            if not self.has_swapped:
+                current_index = self.current_piece.get_index()
+                if self.hold_piece is not None:
+                    self.current_piece = self.create_piece(self.hold_piece.get_index(), Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
+                else:
+                    self.handle_piece_creation()
+                self.hold_piece = self.create_piece(current_index, Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, PIECE_HEIGHT))
+                self.has_swapped = True
 
 
 if __name__ == "__main__":
