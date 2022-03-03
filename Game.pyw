@@ -14,7 +14,6 @@ from GameAssets.Coordinates import Coordinates
 from Config import *
 from Textures import *
 
-#TODO: Decimal in score
 
 class Game:
     def __init__(self):
@@ -23,7 +22,7 @@ class Game:
         self.hold_piece = None
         pygame.init()
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-        pygame.display.set_caption("Hello")
+        pygame.display.set_caption("Pytris")
         self.clock = pygame.time.Clock()
         # self.font = pygame.font.Font("Arial", 32)
         self.pieces = set(x for x in range(0, 7))
@@ -39,6 +38,7 @@ class Game:
         self.handle_piece_creation()
         self.score = 0
         self.score_text = SCORE_FONT.render(str(self.score), True, (255, 255, 255))
+        self.hold_text = HOLD_FONT.render(str("HOLD"), True, (255, 255, 255))
         self.got_tetris = 0
         self.cleared_lines = 0
 
@@ -62,7 +62,11 @@ class Game:
             self.next_indexes.append(next_index)
             self.pieces.remove(next_index)
 
-    def create_piece(self, index, coordinates):
+    def create_piece(self, index, coordinates, center=False):
+        if center and index not in [0, 3]:
+            coordinates.add_x(0.5 * PIECE_WIDTH)
+        # elif center and index == 0:
+        #     coordinates.add_y(-0.5 * PIECE_HEIGHT)
         match index:
             case 0:
                 current_piece = IPiece(PIECE_WIDTH, PIECE_HEIGHT, 400, 100, coordinates,
@@ -107,7 +111,7 @@ class Game:
         offset_y = 5 * PIECE_HEIGHT
         self.next_pieces.clear()
         for index in self.next_indexes:
-            self.next_pieces.append(self.create_piece(index, Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, offset_y)))
+            self.next_pieces.append(self.create_piece(index, Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, offset_y), True))
             offset_y += 4 * PIECE_HEIGHT
 
     def update(self):
@@ -121,7 +125,8 @@ class Game:
     def draw(self):
         self.screen.fill((55, 0, 155))
         self.screen.blit(pygame.transform.scale(BACKGROUND, (GAME_WIDTH, GAME_HEIGHT)), (GAME_OFFSET_X, GAME_OFFSET_Y))
-        self.screen.blit(pygame.transform.scale(HOLD_BACKGROUND, (4 * PIECE_WIDTH, 4 * PIECE_HEIGHT)), (GAME_WIDTH + WIN_OFFSET_X / 6, WIN_OFFSET_Y))
+        self.screen.blit(pygame.transform.scale(HOLD_BACKGROUND, (4 * PIECE_WIDTH, 4 * PIECE_HEIGHT)),
+                         (GAME_WIDTH + WIN_OFFSET_X / 6, WIN_OFFSET_Y))
         for piece_object in self.current_piece.get_ghost().get_subpieces():
             self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         for piece_object in self.current_piece.get_subpieces():
@@ -135,6 +140,7 @@ class Game:
             for piece_object in next_piece.get_subpieces():
                 self.screen.blit(piece_object.get_object(), piece_object.get_coordinates().get_tuple())
         self.screen.blit(self.score_text, (14, 14))
+        self.screen.blit(self.hold_text, (WIN_WIDTH - WIN_OFFSET_X + 1.7 * PIECE_WIDTH, GAME_OFFSET_Y - PIECE_HEIGHT))
         pygame.display.update()
 
     def handle_movement(self, keys_pressed):
@@ -162,10 +168,12 @@ class Game:
             if not self.has_swapped:
                 current_index = self.current_piece.get_index()
                 if self.hold_piece is not None:
-                    self.current_piece = self.create_piece(self.hold_piece.get_index(), Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
+                    self.current_piece = self.create_piece(self.hold_piece.get_index(),
+                                                           Coordinates(int(GAME_WIDTH / 2) - 2 * PIECE_WIDTH, 0))
                 else:
                     self.handle_piece_creation()
-                self.hold_piece = self.create_piece(current_index, Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, PIECE_HEIGHT))
+                self.hold_piece = self.create_piece(current_index,
+                                                    Coordinates(GAME_WIDTH + WIN_OFFSET_X / 6, PIECE_HEIGHT), True)
                 self.has_swapped = True
 
 

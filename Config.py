@@ -14,5 +14,6 @@ FPS = 60
 PIECE_WIDTH, PIECE_HEIGHT = 32, 32
 pygame.font.init()
 SCORE_FONT = pygame.font.SysFont("calibri", 72)
+HOLD_FONT = pygame.font.SysFont("calibri", 36)
 SCORING = {1: 100, 2: 300, 3: 500, 4: 800}
 NEXT_PIECES = 3
